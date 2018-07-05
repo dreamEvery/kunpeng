@@ -5,21 +5,18 @@ const Student = () => import(/* webpackChunkName: "setting" */ '@src/general/app
 export default [
     {
         path: 'function',
-        name: '功能模块管理',
         component: RightFunction
     },
     {
-        name: '添加子菜单',
         path: 'function/add/:id',
         component: RightFunctionAdd
     },
     {
-        name: '添加功能模块',
         path: 'function/add',
         component: RightFunctionAdd
     },
     {
-        name: '更新功能模块',
+        name: 'function-edit',
         path: 'function/edit',
         component: RightFunctionAdd
     },

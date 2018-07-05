@@ -47,6 +47,5 @@ export default {
                 data: obj.data ? obj.data : {}
             })
         )
-    },
-    instance: instance
+    }
 };

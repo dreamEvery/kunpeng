@@ -77,7 +77,7 @@
                                 text: '提交',
                                 btnType: 'primary',
                                 handleClick: (row) => {
-                                    this.global.formValidate.call(this,'functionAddForm', this.save);
+                                    this.global.formValidate(this,'functionAddForm', this.save);
                                 }
                             },
                             {
@@ -94,26 +94,16 @@
         },
         methods: {
             initMenu() {
+                let id = this.$route.params.id;
+                let obj = this.$route.params.obj;
                 funcApi.getMenus().then(res => {
                     if(res.data.code === 0) {
                         this.items[0].options = this.items[0].options.concat(res.data.data);
                     }
-                });
-            },
-            initData() {
-                let id = this.$route.params.id;
-                let obj = this.$route.params.obj;
-                if(id) {
-                    this.search = {
-                        parentId: +id,
-                        name: '',
-                        type: 1,
-                        url: '',
-                        iconUrl: '',
-                        sortNo: 1
-                    }
-                }
-                if(obj) this.search = { ...obj };
+                }).then(() => {
+                    if(id) this.search.parentId = +id;
+                    if(obj) this.search = { ...obj };
+                })
             },
             save() {
                 let params = {
@@ -139,9 +129,6 @@
         },
         created() {
             this.initMenu();
-        },
-        activated() {
-            this.initData();
         },
         components: {
             SearchForm

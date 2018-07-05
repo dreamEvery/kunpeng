@@ -33,10 +33,7 @@
                         </el-submenu>
                     </el-menu>
                 </el-aside>
-                <el-main>
-                    <el-breadcrumb separator="/" class="my-breadcrumb">
-                        <el-breadcrumb-item v-for="(item, index) in routeMatched" :key="index">{{item}}</el-breadcrumb-item>
-                    </el-breadcrumb>
+                <el-main style="background-color: #eff3f9">
                     <keep-alive>
                         <router-view></router-view>
                     </keep-alive>
@@ -66,21 +63,12 @@
                 this.$router.push(this.menu[index].url);
             },
             toPath(item, subItem) {
-                console.log(this.$route)
                 let lastPath = '';
                 lastPath = this.rootPath + item.url + subItem.url;
                 console.log(lastPath)
                 this.$router.push(lastPath);
-            }
-        },
-        computed:{
-            routeMatched(){
-                let arr = [];
-                for(var i in this.$route.matched){
-                    arr.push(this.$route.matched[i].name);
-                }
-                arr.shift();
-                return arr;
+                // console.log(item);
+                // console.log(subItem)
             }
         },
         mounted() {
@@ -94,23 +82,6 @@
         .container{
             .content{
                 height: calc(100vh - 60px);
-                .el-menu{
-                    border: none;
-                }
-                .el-main{
-                    background-color: #eff3f9;
-                    padding-top: 50px;
-                    .my-breadcrumb{
-                        position: fixed;
-                        top: 60px;
-                        z-index: 100;
-                        background: #eff3f9;
-                        display: block;
-                        width: 100%;
-                        height: 50px;
-                        line-height: 50px;
-                    }
-                }
             }
             .header{
                 background: #2C8CF0;

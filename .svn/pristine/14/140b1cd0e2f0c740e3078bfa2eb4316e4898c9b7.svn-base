@@ -31,11 +31,4 @@ export default {
         });
         return res;
     },
-
-    async del (id) {
-        const res = await network.delete({
-            url: `${preUrlPath}/delete/${id}`
-        });
-        return res;
-    },
 }

@@ -1,12 +1,33 @@
 
 import network from '@src/network/index';
-const preUrlPath = '/quest-setting';
+const preUrlPath = '/questionsType';   // 接口所在模块
 
 export default {
-    async list () {
-        const res = await network.get({
-            url: `${preUrlPath}/list`
+    async list (params) {
+        const res = await network.post({
+            url: `${preUrlPath}/list/page`,   // 接口地址
+            data: params
         });
         return res;
-    }
+    },
+    async del (id) {
+        const res = await network.delete({
+            url: `${preUrlPath}/delete/${id}`
+        });
+        return res;
+    },
+    async add (params) {
+        const res = await network.post({
+            url: `${preUrlPath}/add`,
+            data: params
+        });
+        return res;
+    },
+    async deleAll (params) {
+        const res = await network.post({
+            url: `${preUrlPath}/delete/ids`,
+            data: params
+        });
+        return res;
+    },
 }

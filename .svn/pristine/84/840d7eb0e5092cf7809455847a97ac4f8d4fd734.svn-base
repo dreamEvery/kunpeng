@@ -27,7 +27,7 @@
 </template>
 <script>
     import Login from '@src/network/login.js'
-    import instance from '@src/network/index.js';
+
     export default {
         name:'login',
         data(){
@@ -69,10 +69,8 @@
                     let body = res.data
                     let succesCode = 0
                     if (succesCode === body.code) {
-                        that.global.session.set('user', res.data.data);
+                        that.global.session.set('user', res.data.data)
                         that.global.session.set('login', true);
-                        that.global.session.set('authentication', res.data.data.token);
-                        instance.instance.defaults.headers['Authentication'] = res.data.data.token;
                         that.$router.push({   // 你需要接受路由的参数再跳转
                             path: '/'
                         });

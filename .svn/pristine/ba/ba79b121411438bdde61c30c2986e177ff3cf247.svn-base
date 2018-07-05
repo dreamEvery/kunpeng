@@ -77,7 +77,7 @@
                                 text: '提交',
                                 btnType: 'primary',
                                 handleClick: (row) => {
-                                    this.global.formValidate.call(this,'functionAddForm', this.save);
+                                    this.global.formValidate(this,'functionAddForm', this.save);
                                 }
                             },
                             {

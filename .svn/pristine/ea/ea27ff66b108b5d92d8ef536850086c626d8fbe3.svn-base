@@ -8,8 +8,6 @@ import 'babel-polyfill';
 import VueRouter from 'vue-router';
 import { sync } from 'vuex-router-sync';
 
-import instance from '@src/network/index.js';
-
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -27,17 +25,19 @@ const Outer = { template: '<router-view></router-view>' };
 Vue.use(VueRouter);
 
 router.beforeEach((to, from, next) => {
+    console.log(to.path.indexOf('login'))
     if(to.path.indexOf('login') > 0) {
         next(true);
     }else{
-        instance.instance.defaults.headers['Authentication'] = global.session.get('authentication');
         let isLogin = sessionStorage.getItem('login');
+        console.log(isLogin)
         if(isLogin) {
             next(true);
         }else{
             next('/login');
         }
-    }
+    }   
+    
 });
 sync(store, router);
 

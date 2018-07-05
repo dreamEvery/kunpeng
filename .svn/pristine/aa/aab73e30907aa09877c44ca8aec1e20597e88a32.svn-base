@@ -50,8 +50,8 @@
                         renderContent: (h, { row }) => {
                             return [
                                 <el-button type='primary' size='mini' on-click={() => this.$router.push('function/add/' + row.id)}>添加子菜单</el-button>,
-                                <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: '更新功能模块', params: { obj: row }})}>更新</el-button>,
-                                <el-button type='danger' size='mini' on-click={() => this.global.deleteConfirm.call(this, this.deleteOne, row.id)}>删除</el-button>
+                                <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'function-edit', params: { obj: row }})}>更新</el-button>,
+                                <el-button type='danger' size='mini' on-click={() => this.deleteConfirm(this.deleteOne, row.nfcno)}>删除</el-button>
                             ];
                         }
                     }
@@ -69,14 +69,6 @@
                         this.loading = false;
                         this.data = res.data.data;
                         this.total = this.data.length;
-                    }
-                })
-            },
-            deleteOne(id) {
-                funcApi.del(id).then(res => {
-                    if(res.data.code === 0) {
-                        this.$message.success('删除成功');
-                        this.getList();
                     }
                 })
             }
