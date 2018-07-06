@@ -1,7 +1,7 @@
 <template>
     <div class="view">
         <div class="title">
-           查看题型分类
+            查看题型分类
         </div>
         <SearchForm :items="items"  :inline="false" :model="search" ref="onSubmit"></SearchForm>
     </div>
@@ -21,7 +21,7 @@
                     {
                         prop: 'name',
                         type: 'text',
-                        label: '题目类型：'
+                        label: '题型分类：'
                     },
                     {
                         prop: 'remark',
@@ -63,14 +63,14 @@
     .view{
         background-color: #ffffff;
         padding: 40px;
-        .title{
-            font-size: 18px;
-            color: #454c5c;
-            padding-left: 5px;
-            font-weight: bold;
-            border-left: 4px solid #2C8DEE;
-            margin-bottom: 20px;
-        }
+    .title{
+        font-size: 18px;
+        color: #454c5c;
+        padding-left: 5px;
+        font-weight: bold;
+        border-left: 4px solid #2C8DEE;
+        margin-bottom: 20px;
+    }
     }
 
 </style>

@@ -1,17 +1,12 @@
 <template>
     <div class="questType">
-        <el-breadcrumb separator-class="el-icon-arrow-right" class="bread-title">
-            <el-breadcrumb-item>组题管理</el-breadcrumb-item>
-            <el-breadcrumb-item>题库设定</el-breadcrumb-item>
-            <el-breadcrumb-item class="last">题目分类管理</el-breadcrumb-item>
-        </el-breadcrumb>
         <div class="content">
             <SearchForm :items="items" :showMessage="true" :inline="true" :model="search" ref="onSubmit"></SearchForm>
             <div class="button-box">
-                <el-button v-has="10010301" type="primary" icon="el-icon-plus" @click="$router.push('function/add')">添加</el-button>
-                <el-button type="danger" plain icon="el-icon-close" class="delectBatch">批量删除</el-button>
+                <el-button v-has="10010301" type="primary" icon="el-icon-plus" @click="$router.push('questClassily/add')">添加</el-button>
+                <el-button type="danger" plain icon="el-icon-close" class="delectBatch" @click="delectAll(id)">批量删除</el-button>
             </div>
-            <DataTable :loading="loading" :columns="columns" :data="data"></DataTable>
+            <DataTable :loading="loading" :columns="columns" :data="data" :total="total" :page-size="search.size" @page-change="pageChange" @selection-change="selectionChange"></DataTable>
         </div>
     </div>
 </template>
@@ -22,20 +17,22 @@
     import DataTable from '@components/data-table/index'
 
     //  接口
-    import questApi from '@src/network/subject/quest-setting/quest-type';
+    import questApi from '@src/network/subject/quest-setting/questClassily';
 
     export default {
         name: 'questType',
         data: function () {
             return {
                 search: {
-                    location: ''
+                    current: 1,  // 当前页数
+                    size: 10,   // 条数
+                    name: ''
                 },
                 items: [
                     {
-                        prop: 'location',
+                        prop: 'name',
                         type: 'input',
-                        label: '题目类型名称',
+                        label: '题型分类名称',
                         rules: [
                             {required: true, message: '位置不能为空'}
                         ]
@@ -47,7 +44,7 @@
                                 text: '查询',
                                 btnType: 'primary',
                                 handleClick: (row) => {
-                                    this.formValidate('onSubmit', this.save);
+                                    this.questList();
                                 }
                             }
                         ]
@@ -60,33 +57,41 @@
                         type: 'selection'
                     },
                     {
-                        label: '题目类型ID',
+                        label: '题型分类ID',
                         prop: 'id'
                     },
                     {
-                        label: '题目类型名称',
+                        label: '题型分类名称',
                         prop: 'name'
                     },
                     {
                         label: '备注说明',
-                        prop: 'note',
+                        prop: 'remark',
                     },
                     {
                         type: 'action',
                         width: '250',
                         label: '操作',
                         renderContent: (h, { row }) => {
+                            let toQusetEdit = () => {
+                                this.$router.push(
+                                    {
+                                        name: 'quset-edit',
+                                        query: row
+                                    }
+                                )
+                            }
                             return [
-                                <el-button type='primary' size='mini' on-click={() => this.$router.push('quest-setting/add/' + row.id)}>查看</el-button>,
-                            <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'quset-edit', params: { obj: row }})}>更新</el-button>,
-                            <el-button type='danger' size='mini' on-click={() => this.deleteConfirm(this.deleteOne, row.nfcno)}>删除</el-button>
+                            <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: '查看题目分类', params: { obj: row }})}>查看</el-button>,
+                            <el-button type='primary' size='mini' on-click={toQusetEdit}>更新</el-button>,
+                            <el-button type='danger' size='mini' on-click={() => this.deleteConfirm.call(this, this.delect, row.id)}>删除</el-button>
                             ];
                         }
                     }
                 ],
                 data: [],
-                loading: true,
-                total: 0
+                loading: true, //  加载缓冲
+                total: 0  // 总页数
 
 
             }
@@ -96,13 +101,36 @@
             DataTable
         },
         methods: {
+            pageChange(index) {
+                this.search.current = index;
+                this.questList();
+            },
             questList() {
+                let params = {
+                    ...this.search
+                };
                 this.loading = true;
-                questApi.list().then(res => {
+                questApi.list(params).then(res => {
                     if(res.data.code === 0) {
                         this.loading = false;
-                        this.data = res.data.data;
+                        this.data = res.data.data.records;
                         this.total = this.data.length;
+                    }
+                })
+            },
+            delect(id){
+                questApi.del(id).then(res => {
+                    if(res.data.code === 0) {
+                        this.$message.success('删除成功');
+                        this.questList();
+                    }
+                })
+            },
+            delectAll(id){
+                questApi.del(id).then(res => {
+                    if(res.data.code === 0) {
+                        this.$message.success('删除成功');
+                        this.questList();
                     }
                 })
             }

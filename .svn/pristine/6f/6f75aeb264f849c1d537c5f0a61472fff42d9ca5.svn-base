@@ -21,7 +21,7 @@
                     {
                         prop: 'name',
                         type: 'text',
-                        label: '题目类型：'
+                        label: '题型分类：'
                     },
                     {
                         prop: 'remark',
