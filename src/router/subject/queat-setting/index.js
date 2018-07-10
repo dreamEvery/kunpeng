@@ -16,57 +16,68 @@ const StarView = () => import(/* webpackChunkName: "setting" */ '@src/general/ap
 
 // 题目管理
 const Question = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/quest-setting/question/question.vue');
-const QuestionAdd = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/quest-setting/question/add');
+const QuestionAdd = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/quest-setting/question/add.vue');
 export default [
     {
-        name: '题库设定',
+        name: 'questType',
+        meta: {name: '题目类型管理'},
         path: 'QuestType',
         component: QuestType
     },
-    {   name: '添加题目类型',
+    {   name: 'questAdd',
+        meta: {name: '添加题目类型'},
         path: 'QuestType/add',
         component: QuestAdd
     },
-    {   name: '查看题目类型',
+    {   name: 'questView',
+        meta: {name: '查看题目类型'},
         path: 'QuestType/view',
         component: QuestView
     },
     {   name: 'quset-edit',
+        meta: {name: '题库设定'},
         path: 'QuestType/edit',
         component: QuestEdit
     },
     {
-        name: '题库分类管理',
+        name: 'questClassify',
+        meta: {name: '题库分类管理'},
         path: 'questClassily',
         component: QuestClassify
     },
     {
-        name: '添加题目分类',
+        name: 'classilyAdd',
+        meta: {name: '添加题目分类'},
         path: 'questClassily/add',
         component: ClassilyAdd
     },
     {
-        name: '查看题目分类',
+        name: 'classilyView',
+        meta: {name: '查看题目分类'},
         path: 'questClassily/view',
         component: ClassilyView
     },
     {
-        name: '题目星级管理',
+        name: 'questStar',
+        meta: {name: '题目星级管理'},
         path: 'questStar',
         component: QuestStar
     },
     {
-        name: '查看星级管理',
+        name: 'starView',
+        meta: {name: '查看星级管理'},
         path: 'questStar/view',
         component: StarView
     },
     {
-        name: '题目管理',
+        name: 'question',
+        meta: {name: '题目管理'},
         path: 'question',
         component: Question
     },
     {
-        name: '添加题目管理',
+        name: 'questionAdd',
+        meta: {name: '添加题目管理'},
         path: 'question/add',
         component: QuestionAdd
     },

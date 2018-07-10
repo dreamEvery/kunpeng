@@ -3,7 +3,7 @@
         <div class="content">
             <SearchForm :items="items" :showMessage="true" :inline="true" :model="search" ref="onSubmit"></SearchForm>
             <div class="button-box">
-                <el-button v-has="10010301" type="primary" icon="el-icon-plus" @click="$router.push('question/add')">添加</el-button>
+                <el-button v-has="10010301" type="primary" icon="el-icon-plus" @click="$router.push('/question/add')">添加</el-button>
                 <el-button type="danger" plain icon="el-icon-close" class="delectBatch" @click="delectAll(id)">批量删除</el-button>
             </div>
             <DataTable :loading="loading" :columns="columns" :data="data" :total="total" :page-size="search.size" @page-change="pageChange" @selection-change="selectionChange"></DataTable>
@@ -96,7 +96,7 @@
                                 )
                             }
                             return [
-                                <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: '查看题目分类', params: { obj: row }})}>查看</el-button>,
+                                <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'classilyView', params: { obj: row }})}>查看</el-button>,
                             <el-button type='primary' size='mini' on-click={toQusetEdit}>更新</el-button>,
                             <el-button type='danger' size='mini' on-click={() => this.global.deleteConfirm.call(this, this.delect, row.id)}>删除</el-button>
                             ];

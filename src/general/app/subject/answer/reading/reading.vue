@@ -2,10 +2,6 @@
     <div class="questType">
         <div class="content">
             <SearchForm :items="items" :showMessage="true" :inline="true" :model="search" ref="onSubmit"></SearchForm>
-            <div class="button-box">
-                <el-button v-has="10010301" type="primary" icon="el-icon-plus" @click="$router.push('questClassily/add')">添加</el-button>
-                <el-button type="danger" plain icon="el-icon-close" class="delectBatch" @click="delectAll(id)">批量删除</el-button>
-            </div>
             <DataTable :loading="loading" :columns="columns" :data="data" :total="total" :page-size="search.size" @page-change="pageChange" @selection-change="selectionChange"></DataTable>
         </div>
     </div>
@@ -17,26 +13,45 @@
     import DataTable from '@components/data-table/index'
 
     //  接口
-    import questApi from '@src/network/subject/quest-setting/questStar';
+    import reading from '@src/network/subject/quest-setting/reading.js';
 
     export default {
         name: 'questType',
         data: function () {
             return {
                 search: {
-                    current: 1,  // 当前页数
-                    size: 10,   // 条数
-                    name: '',
-                    rank: ''
+                    current: 1,
+                    gradeId: '',
+                    size: 10,
+                    stuName: '',
+                    verifyType: 1,
+                    insertTime: ''
                 },
                 items: [
                     {
-                        prop: 'name',
-                        type: 'input',
-                        label: '题目星级名称',
-                        rules: [
-                            {required: true, message: '位置不能为空'}
-                        ]
+                        prop: 'gptypeName',
+                        type: 'select',
+                        label: '学生姓名',
+                        placeholder: '请选择学生姓名',
+                        options: [
+
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
+                    },
+                    {
+                        prop: 'gradeId',
+                        type: 'select',
+                        label: '年级',
+                        placeholder: '请选择年级',
+                        options: [
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
                     },
                     {
                         type: 'action',
@@ -45,7 +60,7 @@
                                 text: '查询',
                                 btnType: 'primary',
                                 handleClick: (row) => {
-                                    this.questList();
+                                    this.answerWay();
                                 }
                             }
                         ]
@@ -54,42 +69,48 @@
                 // table的属性设置
                 columns: [
                     {
-                        //  全选模块
-                        type: 'selection'
+                        label: '学生姓名',
+                        prop: 'stuName'
                     },
                     {
-                        label: '题目星级ID',
-                        prop: 'id'
+                        label: '学号',
+                        prop: 'gradeName'
                     },
                     {
-                        label: '题目星级名称',
-                        prop: 'rank',
-                        renderContent: (h, {row}) => {
-                            return (
-                                <el-rate value={row.rank} max={row.rank} disabled text-color="#ff9900"></el-rate>
-                            )
-                        }
+                        label: '所在班级',
+                        prop: 'className',
                     },
                     {
-                        label: '备注说明',
+                        label: '负责教师',
+                        prop: 'teaName',
+                    },
+                    {
+                        label: '申请挑战',
+                        prop: 'insertTime',
+                    },
+                    {
+                        label: '申请原因',
                         prop: 'remark',
+                    },
+                    {
+                        label: '申请时间',
+                        prop: 'verifyTime',
+                    },
+                    {
+                        label: '申请状态',
+                        prop: 'verifyRemark',
+                    },
+                    {
+                        label: '审批人',
+                        prop: 'verifyName',
                     },
                     {
                         type: 'action',
                         width: '250',
                         label: '操作',
                         renderContent: (h, { row }) => {
-                            let toQusetEdit = () => {
-                                this.$router.push(
-                                    {
-                                        name: 'quset-edit',
-                                        query: row
-                                    }
-                                )
-                            }
                             return [
-                            <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'starView', params: { obj: row }})}>查看</el-button>,
-                            <el-button type='primary' size='mini' on-click={toQusetEdit}>更新</el-button>,
+                            <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'wayEdit', query: row })}>更新</el-button>,
                             <el-button type='danger' size='mini' on-click={() => this.global.deleteConfirm.call(this, this.delect, row.id)}>删除</el-button>
                             ];
                         }
@@ -97,7 +118,8 @@
                 ],
                 data: [],
                 loading: true, //  加载缓冲
-                total: 0  // 总页数
+                total: 0,  // 总页数,
+                selection: []
 
 
             }
@@ -109,14 +131,14 @@
         methods: {
             pageChange(index) {
                 this.search.current = index;
-                this.questList();
+                this.answerWay();
             },
-            questList() {
+            answerWay() {
                 let params = {
                     ...this.search
                 };
                 this.loading = true;
-                questApi.list(params).then(res => {
+                reading.list(params).then(res => {
                     if(res.data.code === 0) {
                         this.loading = false;
                         this.data = res.data.data.records;
@@ -125,25 +147,18 @@
                 })
             },
             delect(id){
-                questApi.del(id).then(res => {
+                reading.del(id).then(res => {
                     if(res.data.code === 0) {
                         this.$message.success('删除成功');
-                        this.questList();
-                    }
-                })
-            },
-            delectAll(id){
-                questApi.del(id).then(res => {
-                    if(res.data.code === 0) {
-                        this.$message.success('删除成功');
-                        this.questList();
+                        this.answerWay();
                     }
                 })
             }
         },
         mounted() {
-            this.questList();
-        },
+            this.answerWay();
+            this.items[1].options = this.global.session.get('gradeList')
+        }
     }
 </script>
 <style lang="less">

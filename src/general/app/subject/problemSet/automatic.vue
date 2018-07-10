@@ -2,6 +2,9 @@
     <div class="problemSet">
         <div class="contend">
             <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="100px" :model="search" ref="functionAddForm"></SearchForm>
+            <div class="star">
+
+            </div>
         </div>
     </div>
 </template>
@@ -11,7 +14,7 @@
         data() {
             return {
                 search: {
-                    parentId: 1,
+                    parentId: 0,
                     name: '',
                     type: 1,
                     url: '',
@@ -65,14 +68,16 @@
                         prop: 'num   ',
                         type: 'input',
                         label: '题目数量',
-                        addition: () => {
-                            return [
-                                <el-input v-model="input" placeholder="请输入内容" label="试卷总分"></el-input>,
-                                <el-input v-model="input" placeholder="请输入内容" label="答题时间"></el-input>
-
-
-                            ]
-                        }
+                    },
+                    {
+                        prop: 'num   ',
+                        type: 'input',
+                        label: '试卷总分',
+                    },
+                    {
+                        prop: 'num',
+                        type: 'input',
+                        label: '答题数量',
                     },
                     {
                         type: 'action',

@@ -10,31 +10,59 @@
 
     import SearchForm from '@components/search-form/index';
     import questApi from '@src/network/subject/quest-setting/quest-type';
+
+
     export default{
         data () {
             return{
                 search: {
                     name: this.$route.query.name,
-                    remark: this.$route.query.remark,
-                    id: this.$route.query.id
+                    gptypeName: this.$route.query.gptypeName,
+                    gradeId: this.$route.query.gradeId
                 },
-                items:[
+                items: [
                     {
-                        prop: 'name',
-                        type: 'input',
-                        label: '题型分类：'
+                        prop: 'gradeId',
+                        type: 'select',
+                        label: '年级',
+                        placeholder: '请选择年级',
+                        options: [
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
                     },
                     {
-                        prop: 'remark',
-                        type: 'input',
-                        label: '说明：'
+                        prop: 'gradeId',
+                        type: 'select',
+                        label: '年级',
+                        placeholder: '请选择年级',
+                        options: [
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
+                    },
+                    {
+                        prop: 'gradeId',
+                        type: 'select',
+                        label: '年级',
+                        placeholder: '请选择年级',
+                        options: [
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
                     },
                     {
                         type: 'action',
                         actionList: [
                             {
                                 text: '提交',
-                                btnType: 'danger',
+                                btnType: 'primary',
                                 handleClick: (row) => {
                                     this.global.formValidate.call(this,'functionAddForm', this.save);
                                 }

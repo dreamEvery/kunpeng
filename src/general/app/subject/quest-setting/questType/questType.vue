@@ -74,7 +74,7 @@ export default {
                     label: '操作',
                     renderContent: (h, { row }) => {
                         return [
-                        <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: '查看题目类型', params: { obj: row }})}>查看</el-button>,
+                        <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'questView', params: { obj: row }})}>查看</el-button>,
                         <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'quset-edit', query: row })}>更新</el-button>,
                         <el-button type='danger' size='mini' on-click={() => this.global.deleteConfirm.call(this, this.delect, row.id)}>删除</el-button>
                         ];

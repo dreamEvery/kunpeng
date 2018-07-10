@@ -82,7 +82,7 @@
                                 )
                             }
                             return [
-                            <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: '查看题目分类', params: { obj: row }})}>查看</el-button>,
+                            <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: '题库分类管理', params: { obj: row }})}>查看</el-button>,
                             <el-button type='primary' size='mini' on-click={toQusetEdit}>更新</el-button>,
                             <el-button type='danger' size='mini' on-click={() => this.deleteConfirm.call(this, this.delect, row.id)}>删除</el-button>
                             ];
@@ -127,7 +127,7 @@
                 })
             },
             delectAll(id){
-                questApi.del(id).then(res => {
+                questApi.del({id: id}).then(res => {
                     if(res.data.code === 0) {
                         this.$message.success('删除成功');
                         this.questList();

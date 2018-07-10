@@ -1,30 +1,46 @@
 <template>
     <div class="function-add">
-        <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="100px" :model="search" ref="functionAddForm"></SearchForm>
+        <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="120px" :model="search" ref="functionAddForm"></SearchForm>
+        <div class="alertBox">
+            <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                </div>
+            </el-dialog>
+        </div>
     </div>
 </template>
 <script>
     import SearchForm from '@components/search-form/index';
-    import funcApi from '@src/network/setting/right/function.js';
+    import questApi from '@src/network/subject/quest-setting/questions';
     export default {
         data() {
             return {
                 search: {
-                    parentId: 1,
+                    dialogFormVisible: false,
+                    answerTypeId: '',
+                    choices: [],
+                    correctChoiceIds: [],
+                    anstname: '',
+                    bookName: '',
+                    id: 0,
                     name: '',
-                    type: 1,
-                    url: '',
-                    iconUrl: '',
-                    sortNo: 1
+                    qyname: '',
+                    imageUrl: '',
+                    insertTime: '',
+                    questionsRankId: 1,
+                    questionsTypeId: 1,
+                    readBookId: '2'
                 },
                 items: [
                     {
-                        prop: 'parentId',
-                        type: 'select',
-                        label: '上级菜单',
-                        placeholder: '请选择上级菜单',
+                        prop: 'bookName',
+                        type: 'input',
+                        label: '阅读书籍名称',
+                        placeholder: '请选择书籍名称',
                         rules: [
-                            {required: true, message: '上级菜单不能为空'}
+                            {required: true, message: '书籍名称不能为空'}
                         ],
                         options: [{id: 1, name: '作为一级菜单'}],
                         defaultProps: {
@@ -33,48 +49,84 @@
                         },
                         addition: () => {
                             return [
-                                <el-button type="warning" style="margin-left: 20px;" on-click={this.chooseBook}>选择书籍</el-button>
+                                <el-button type="warning" style="margin-left: 20px;" on-click="dialogFormVisible = true">选择书籍</el-button>
                             ]
                         }
+                    },
+                      {
+                          prop: 'questionsTypeId',
+                          type: 'select',
+                          label: '题目类型',
+                          placeholder: '请选择题目类型',
+                          rules: [
+                              {required: true, message: '题目类型不能为空'}
+                          ],
+                          options: [
+                              {id: 1, name: '记忆选择题'},
+                              {id: 2, name: '记忆判断题'},
+                              {id: 3, name: '理解选择题'},
+                              {id: 4, name: '记忆判断题'}
 
-                    },
+                          ],
+                          defaultProps: {
+                              id: 'id',
+                              label: 'name'
+                          }
+                      },
                     {
-                        prop: 'name',
+                        label: '题目星级名称',
+                        prop: 'questionsRankId',
+                        renderContent: (h, {row}) => {
+                            return (
+                                <el-rate value={row.questionsRankId} max={row.questionsRankId} disabled text-color="#ff9900"></el-rate>
+                            )
+                        }
+                    },
+                      {
+                        prop: 'anstname',
                         type: 'input',
-                        label: '功能名称',
-                        rules: [
-                            {required: true, message: '功能名称不能为空'}
-                        ]
+                        label: '题目'
                     },
                     {
-                        prop: 'url',
-                        type: 'input',
-                        label: '菜单URL'
-                    },
-                    {
-                        prop: 'iconUrl',
+                        prop: 'imageUrl',
                         type: 'upload',
                         label: '图片',
                         limit: 1, //文件最大上传个数
                         fileList:[]
                     },
                     {
-                        prop: 'type',
+                        prop: 'choices',
+                        placeholder: 'A:',
+                        type: 'input',
+                        label: '选择答案'
+                     },
+                    {
+                        type: 'input',
+                        placeholder: 'B:',
+                    },
+                    {
+                        prop: 'anstname',
+                        type: 'input',
+                        placeholder: 'C:',
+                    },
+                    {
+                        prop: 'anstname',
+                        type: 'input',
+                        placeholder: 'D:',
+                    },
+                    {
+                        prop: 'correctChoiceIds',
                         type: 'radio',
-                        label: '菜单类型',
+                        label: '正确答案',
                         rules: [
                             {required: true, message: '位置不能为空'}
                         ],
                         options: [
-                            {value: 1, text: '菜单目录'},
-                            {value: 2, text: '菜单功能'},
-                            {value: 3, text: '操作功能'}
+                            {value: 1, text: 'A'},
+                            {value: 2, text: 'B'},
+                            {value: 3, text: 'C'},
+                            {value: 4, text: 'D'}
                         ]
-                    },
-                    {
-                        prop: 'sortNo',
-                        type: 'input',
-                        label: '排序NO'
                     },
                     {
                         type: 'action',
@@ -99,55 +151,58 @@
             }
         },
         methods: {
-            initMenu() {
-                funcApi.getMenus().then(res => {
-                    if(res.data.code === 0) {
-                        this.items[0].options = this.items[0].options.concat(res.data.data);
-                    }
-                });
-            },
-            initData() {
-                let id = this.$route.params.id;
-                let obj = this.$route.params.obj;
-                if(id) {
-                    this.search = {
-                        parentId: +id,
-                        name: '',
-                        type: 1,
-                        url: '',
-                        iconUrl: '',
-                        sortNo: 1
-                    }
-                }
-                if(obj) this.search = { ...obj };
-            },
-            save() {
-                let params = {
-                    ...this.search
-                };
-                let obj = this.$route.params.obj;
-                if(obj) {
-                    funcApi.edit(params).then((res) => {
-                        if(res.data.code == 0){
-                            this.$message.success('修改成功');
-                            this.$router.go(-1);
-                        }
-                    })
-                }else{
-                    funcApi.add(params).then((res) => {
-                        if(res.data.code == 0){
-                            this.$message.success('添加成功');
-                            this.$router.go(-1);
-                        }
-                    })
-                }
+            chooseBook () {
+                this.dialogFormVisible = true
             }
+//            initMenu() {
+//                questApi.getMenus().then(res => {
+//                    if(res.data.code === 0) {
+//                        this.items[0].options = this.items[0].options.concat(res.data.data);
+//                    }
+//                });
+//            },
+//            initData() {
+//                let id = this.$route.params.id;
+//                let obj = this.$route.params.obj;
+//                if(id) {
+//                    this.search = {
+//                        parentId: +id,
+//                        name: '',
+//                        type: 1,
+//                        url: '',
+//                        iconUrl: '',
+//                        sortNo: 1
+//                    }
+//                }
+//                if(obj) this.search = { ...obj };
+//            },
+//            save() {
+//                let params = {
+//                    ...this.search
+//                };
+//                let obj = this.$route.params.obj;
+//                if(obj) {
+//                    questApi.edit(params).then((res) => {
+//                        if(res.data.code == 0){
+//                            this.$message.success('修改成功');
+//                            this.$router.go(-1);
+//                        }
+//                    })
+//                }else{
+//                    questApi.add(params).then((res) => {
+//                        if(res.data.code == 0){
+//                            this.$message.success('添加成功');
+//                            this.$router.go(-1);
+//                        }
+//                    })
+//                }
+//            }
         },
         created() {
-            this.initMenu();
+//            this.initMenu();
         },
         activated() {
-            this.initData();
+//            this.initData();
         },
         components: {
             SearchForm

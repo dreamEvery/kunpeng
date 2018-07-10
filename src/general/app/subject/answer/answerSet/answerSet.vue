@@ -2,10 +2,6 @@
     <div class="questType">
         <div class="content">
             <SearchForm :items="items" :showMessage="true" :inline="true" :model="search" ref="onSubmit"></SearchForm>
-            <div class="button-box">
-                <el-button v-has="10010301" type="primary" icon="el-icon-plus" @click="$router.push('questClassily/add')">添加</el-button>
-                <el-button type="danger" plain icon="el-icon-close" class="delectBatch" @click="delectAll(id)">批量删除</el-button>
-            </div>
             <DataTable :loading="loading" :columns="columns" :data="data" :total="total" :page-size="search.size" @page-change="pageChange" @selection-change="selectionChange"></DataTable>
         </div>
     </div>
@@ -17,23 +13,23 @@
     import DataTable from '@components/data-table/index'
 
     //  接口
-    import questApi from '@src/network/subject/quest-setting/questStar';
+    import answerApi from '@src/network/subject/quest-setting/answer';
 
     export default {
         name: 'questType',
         data: function () {
             return {
                 search: {
-                    current: 1,  // 当前页数
-                    size: 10,   // 条数
+                    current: 1,
+                    size: 10,
                     name: '',
-                    rank: ''
+                    value: ''
                 },
                 items: [
                     {
                         prop: 'name',
                         type: 'input',
-                        label: '题目星级名称',
+                        label: '题目类型名称',
                         rules: [
                             {required: true, message: '位置不能为空'}
                         ]
@@ -54,21 +50,16 @@
                 // table的属性设置
                 columns: [
                     {
-                        //  全选模块
-                        type: 'selection'
-                    },
-                    {
-                        label: '题目星级ID',
+                        label: '题目类型ID',
                         prop: 'id'
                     },
                     {
-                        label: '题目星级名称',
-                        prop: 'rank',
-                        renderContent: (h, {row}) => {
-                            return (
-                                <el-rate value={row.rank} max={row.rank} disabled text-color="#ff9900"></el-rate>
-                            )
-                        }
+                        label: '答题设置名称',
+                        prop: 'name'
+                    },
+                    {
+                       label: '答题设置值',
+                        prop: 'value'
                     },
                     {
                         label: '备注说明',
@@ -79,25 +70,17 @@
                         width: '250',
                         label: '操作',
                         renderContent: (h, { row }) => {
-                            let toQusetEdit = () => {
-                                this.$router.push(
-                                    {
-                                        name: 'quset-edit',
-                                        query: row
-                                    }
-                                )
-                            }
                             return [
-                            <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'starView', params: { obj: row }})}>查看</el-button>,
-                            <el-button type='primary' size='mini' on-click={toQusetEdit}>更新</el-button>,
-                            <el-button type='danger' size='mini' on-click={() => this.global.deleteConfirm.call(this, this.delect, row.id)}>删除</el-button>
+                                <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'answerView', params: { obj: row }})}>查看</el-button>,
+                                <el-button type='primary' size='mini' on-click={() => this.$router.push({ name: 'answerEdit', query: row })}>更新</el-button>
                             ];
                         }
                     }
                 ],
                 data: [],
                 loading: true, //  加载缓冲
-                total: 0  // 总页数
+                total: 0,  // 总页数,
+                selection: []
 
 
             }
@@ -109,40 +92,24 @@
         methods: {
             pageChange(index) {
                 this.search.current = index;
-                this.questList();
+                this.answerList();
             },
-            questList() {
+            answerList() {
                 let params = {
                     ...this.search
                 };
                 this.loading = true;
-                questApi.list(params).then(res => {
+                answerApi.list(params).then(res => {
                     if(res.data.code === 0) {
                         this.loading = false;
                         this.data = res.data.data.records;
                         this.total = this.data.length;
                     }
                 })
-            },
-            delect(id){
-                questApi.del(id).then(res => {
-                    if(res.data.code === 0) {
-                        this.$message.success('删除成功');
-                        this.questList();
-                    }
-                })
-            },
-            delectAll(id){
-                questApi.del(id).then(res => {
-                    if(res.data.code === 0) {
-                        this.$message.success('删除成功');
-                        this.questList();
-                    }
-                })
             }
         },
         mounted() {
-            this.questList();
+            this.answerList();
         },
     }
 </script>

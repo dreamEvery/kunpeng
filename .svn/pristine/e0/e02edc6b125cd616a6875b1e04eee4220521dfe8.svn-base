@@ -19,7 +19,7 @@ const routes = [
             { path: 'index',  name: 'home', meta: {name:'首页'}, component: Home },
             { path: 'setting', name: 'setting', meta: {name:'设置'}, component: Setting, children: setting_children },
             { path: 'books', name: 'books', meta: {name:'好书管理'}, component: Books, children: books_children },
-            { path: 'subject', name: 'subject', component: Subject, meta: {name:'组题管理'},children: subject_children },
+            { path: 'subject', component: Subject, children: subject_children },
             { path: 'statistics',name:'statistics', meta: {name:'统计分析'}, component: Statistics, children: statistics_children }
         ]
     },

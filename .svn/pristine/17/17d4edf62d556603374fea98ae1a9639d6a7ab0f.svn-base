@@ -2,8 +2,7 @@ const Automatic = () => import(/* webpackChunkName: "setting" */ '@src/general/a
 
 export default [
     {
-        name: 'automatic',
-        meta: {name: '自动组题'},
+        name: '自动组题',
         path: 'automatic',
         component: Automatic
     },

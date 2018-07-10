@@ -1,41 +1,47 @@
 <template>
-    <div class="add">
+    <div class="view">
+        <div class="title">
+            更新题型分类
+        </div>
         <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="100px" :model="search" ref="functionAddForm"></SearchForm>
     </div>
 </template>
 <script>
+
     import SearchForm from '@components/search-form/index';
-    import questApi from '@src/network/subject/quest-setting/quest-type';
-    export default {
-        data() {
-            return {
+    import answerApi from '@src/network/subject/quest-setting/answer';
+
+    export default{
+        data () {
+            return{
                 search: {
-                    name: '',
-                    remark: ''
+                    name: this.$route.query.name,
+                    remark: this.$route.query.remark,
+                    id: this.$route.query.id,
+                    value: this.$route.query.value
                 },
-                items: [
+                items:[
                     {
                         prop: 'name',
                         type: 'input',
-                        label: '功能名称',
-                        rules: [
-                            {required: true, message: '功能名称不能为空'}
-                        ]
+                        label: '题型分类：'
+                    },
+                    {
+                        prop: 'value',
+                        type: 'input',
+                        label: '答题设置值：'
                     },
                     {
                         prop: 'remark',
                         type: 'input',
-                        label: '功能名称',
-                        rules: [
-                            {required: true, message: '功能名称不能为空'}
-                        ]
+                        label: '说明：'
                     },
                     {
                         type: 'action',
                         actionList: [
                             {
                                 text: '提交',
-                                btnType: 'primary',
+                                btnType: 'danger',
                                 handleClick: (row) => {
                                     this.global.formValidate.call(this,'functionAddForm', this.save);
                                 }
@@ -53,47 +59,40 @@
             }
         },
         methods: {
-            // 添加
             save() {
                 let params = {
-                    ...this.search   //  参数
+                    ...this.search
                 };
-                let obj = this.$route.params.obj;
-//                if(obj) {
-//                    questApi.edit(params).then((res) => {
-//                        if(res.data.code == 0){
-//                            this.$message.success('修改成功');
-//                            this.$router.go(-1);
-//                        }
-//                    })
-//                }else{
-//                    questApi.add(params).then((res) => {
-//                        if(res.data.code == 0){
-//                            this.$message.success('添加成功');
-//                            this.$router.go(-1);
-//                        }
-//                    })
-//                }
-                questApi.add(params).then((res) => {
+                console.log(params,'3333')
+                answerApi.edit(params).then((res) => {
                     if(res.data.code == 0){
-                        this.$message.success('添加成功');
+                        this.$message.success('修改成功');
                         this.$router.go(-1);
                     }
                 })
             }
-        },
-        created() {
-        },
-        activated() {
+
         },
         components: {
             SearchForm
+        },
+        created(){
+            console.log(this.$route.query.obj.name, '3333')
         }
     }
 </script>
-<style lang="less" scoped>
-    .function-add{
+<style lang="less">
+    .view{
+        background-color: #ffffff;
         padding: 40px;
+    .title{
+        font-size: 18px;
+        color: #454c5c;
+        padding-left: 5px;
+        font-weight: bold;
+        border-left: 4px solid #2C8DEE;
+        margin-bottom: 20px;
     }
-</style>
+    }
 
+</style>
