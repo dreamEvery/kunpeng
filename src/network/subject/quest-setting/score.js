@@ -1,17 +1,10 @@
 import network from '@src/network/index';
-const preUrlPath = '/answerType';   // 接口所在模块
+const preUrlPath = '/readValue';   // 接口所在模块
 
 export default {
     async list (params) {
         const res = await network.post({
             url: `${preUrlPath}/list/page`,   // 接口地址
-            data: params
-        });
-        return res;
-    },
-    async add (params) {
-        const res = await network.post({
-            url: `${preUrlPath}/add`,   // 接口地址
             data: params
         });
         return res;
@@ -23,7 +16,7 @@ export default {
         return res;
     },
     async edit (params) {
-        const res = await network.put({
+        const res = await network.post({
             url: `${preUrlPath}/edit`,
             data: params
         });
@@ -34,5 +27,7 @@ export default {
             url: `${preUrlPath}/get/${id}`
         });
         return res;
-    },
+    }
 }
+
+

@@ -12,11 +12,13 @@
 
     //  接口
     import answerOption from '@src/network/subject/quest-setting/answer-public.js';
+    import ProblemSet from '@src/network/subject/quest-setting/problemSet/dynamic.js'
 
     export default {
         name: 'questType',
         data: function () {
             return {
+                instertime: '',
                 search: {
                     current: 1,
                     size: 10,
@@ -43,41 +45,20 @@
                         }
                     },
                     {
-                        prop: 'readType',
-                        type: 'select',
-                        label: '阅读类型',
-                        placeholder: '请选择阅读类型',
-                        options: [
-                        ],
-                        defaultProps: {
-                            id: 'id',
-                            label: 'name'
-                        }
-                    },
-                    {
-                        prop: 'gradeName',
-                        type: 'select',
-                        label: '阅读书籍',
-                        placeholder: '请选择阅读书籍',
-                        options: [
-                        ],
-                        defaultProps: {
-                            id: 'id',
-                            label: 'name'
-                        }
-                    },
-                    {
                         prop: 'time',
                         type: 'input',
                         label: '答题时间：',
                         rules: [
                             {required: true, message: '位置不能为空'}
-                        ]
+                        ],
+//                        renderContent: (h, { search }) => {
+//                            return this.global.dateFilter.ymdHm(search.insertTime)
+//                        }
                     },
                     {
                         prop: 'number',
                         type: 'text',
-                        label: '类型数量分配 ：',
+                        label: '题目类型数量  ：',
                         rules: [
                             {required: true, message: '位置不能为空'}
                         ]
@@ -163,9 +144,18 @@
             readingBook () {
                 let params = {current: 1, size: 10, name: '',gradeId: '',readTypeId: ''}
                 answerOption.readingBooks(params).then(res => {
-                     if(res.data.code === 0) {
-                       this.items[2].options  = res.data.data
-                     }
+                    if(res.data.code === 0) {
+                        this.items[2].options  = res.data.data
+                    }
+                })
+            },
+            init () {
+                let id = this.$route.params.id;
+                ProblemSet.get(id).then(res => {
+                    if(res.data.code === 0) {
+                        this.search = res.data.data;
+                        this.instertime = this.global.dateFilter.ymdHm(this.search.insertTime)
+                    }
                 })
             }
         },
@@ -174,10 +164,8 @@
             this.readingType(),
             this.readingBook()
         },
-        computed: {
-//            totalScore: function () {
-//                return this.score = this.totalNumber * 5
-//            }
+        created() {
+            this.init()
         }
     }
 </script>

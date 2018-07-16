@@ -3,7 +3,6 @@
         <div class="content">
             <SearchForm :items="items" :showMessage="true" :inline="true" :model="search" ref="onSubmit"></SearchForm>
             <div class="button-box">
-                <el-button v-has="10010301" type="primary" icon="el-icon-plus" @click="$router.push('questClassily/add')">添加</el-button>
                 <el-button type="danger" plain icon="el-icon-close" class="delectBatch" @click="delectAll(id)">批量删除</el-button>
             </div>
             <DataTable :loading="loading" :columns="columns" :data="data" :total="total" :page-size="search.size" @page-change="pageChange" @selection-change="selectionChange"></DataTable>
@@ -17,7 +16,8 @@
     import DataTable from '@components/data-table/index'
 
     //  接口
-    import questApi from '@src/network/subject/quest-setting/questClassily';
+    import scoreApi from '@src/network/subject/quest-setting/score.js';
+    import quseType from '@src/network/subject/quest-setting/answer-public.js'
 
     export default {
         name: 'questType',
@@ -26,25 +26,47 @@
                 search: {
                     current: 1,  // 当前页数
                     size: 10,   // 条数
-                    name: ''
+                    id: '',
+                    gradeName: '',
+                    typeName: '',
+                    value: '',
+                    gradeId: '',
+                    gptypeName: ''
                 },
                 items: [
                     {
-                        prop: 'name',
-                        type: 'input',
-                        label: '题型分类名称',
-                        rules: [
-                            {required: true, message: '位置不能为空'}
-                        ]
+                        prop: 'gradeId',
+                        type: 'select',
+                        label: '年级',
+                        placeholder: '请选择',
+                        options: [
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
+                    },
+                    {
+                        prop: 'gptypeName',
+                        type: 'select',
+                        label: '题目类型',
+                        placeholder: '请选择',
+                        options: [
+
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
                     },
                     {
                         type: 'action',
                         actionList: [
                             {
                                 text: '查询',
-                                btnType: 'primary',
+                                btnType: 'warning',
                                 handleClick: (row) => {
-                                    this.questList();
+                                    this.scoreList();
                                 }
                             }
                         ]
@@ -57,16 +79,20 @@
                         type: 'selection'
                     },
                     {
-                        label: '题型分类ID',
+                        label: '题目类型ID',
                         prop: 'id'
                     },
                     {
-                        label: '题型分类名称',
-                        prop: 'name'
+                        label: '年级',
+                        prop: 'gradeName'
                     },
                     {
-                        label: '备注说明',
-                        prop: 'remark',
+                        label: '题目类型',
+                        prop: 'typeName',
+                    },
+                    {
+                        label: '分值',
+                        prop: 'value',
                     },
                     {
                         type: 'action',
@@ -74,7 +100,7 @@
                         label: '操作',
                         renderContent: (h, { row }) => {
                             return [
-                            <el-button type='primary' size='mini' on-click={() => this.$router.push(`questClassily/edit/${row.id}`)}>更新</el-button>,
+                                <el-button type='primary' size='mini' on-click={() => this.$router.push(`score/edit/${row.id}`)}>更新</el-button>,
                             <el-button type='danger' size='mini' on-click={() => this.global.deleteConfirm.call(this, this.delect, row.id)}>删除</el-button>
                             ];
                         }
@@ -94,14 +120,14 @@
         methods: {
             pageChange(index) {
                 this.search.current = index;
-                this.questList();
+                this.scoreList();
             },
-            questList() {
+            scoreList() {
                 let params = {
                     ...this.search
                 };
                 this.loading = true;
-                questApi.list(params).then(res => {
+                scoreApi.list(params).then(res => {
                     if(res.data.code === 0) {
                         this.loading = false;
                         this.data = res.data.data.records;
@@ -110,7 +136,7 @@
                 })
             },
             delect(id){
-                questApi.del(id).then(res => {
+                scoreApi.del(id).then(res => {
                     if(res.data.code === 0) {
                         this.$message.success('删除成功');
                         this.questList();
@@ -118,31 +144,29 @@
                 })
             },
             delectAll(id){
-                questApi.del({id: id}).then(res => {
+                scoreApi.del(id).then(res => {
                     if(res.data.code === 0) {
                         this.$message.success('删除成功');
-                        this.questList();
+                        this.scoreList();
+                    }
+                })
+            },
+            // 题目类型
+            questType () {
+                quseType.questType().then(res => {
+                    if(res.data.code === 0) {
+                        this.items[1].options = res.data.data
                     }
                 })
             }
         },
         mounted() {
-            this.questList();
-        },
+            this.scoreList();
+            this.questType();
+            this.items[0].options = this.global.session.get('gradeList')
+        }
     }
 </script>
 <style lang="less">
-    .questType{
-    .bread-title{
-        padding: 10px 0 10px 20px;
-    .last >span{color: #474e5d;}
-    }
-    .content{
-        background-color: #ffffff;padding: 20px 18px;
-    .button-box{
-    .delectBatch{float: right}
-    }
-    }
-    }
 </style>
 

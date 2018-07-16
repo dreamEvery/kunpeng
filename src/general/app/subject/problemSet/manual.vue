@@ -2,6 +2,24 @@
     <div class="questType">
         <div class="content">
             <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="140px" :model="search" ref="functionAddForm"></SearchForm>
+            <div class="alertBox">
+                <el-dialog :visible.sync="centerDialogVisible">
+                    <div class="top">
+                        <span>共勾选: 道题</span>
+                        <span>共:分</span>
+                    </div>
+                    <SearchForm :items="items2" :showMessage="true" :inline="true" labelWidth="140px" :model="form"></SearchForm>
+                    <el-checkbox-group v-model="checkList" class="checkList">
+                        <el-checkbox label="复选框 A"></el-checkbox>
+                        <el-checkbox label="复选框 B"></el-checkbox>
+                        <el-checkbox label="复选框 C"></el-checkbox>
+                    </el-checkbox-group>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="centerDialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
         </div>
     </div>
 </template>
@@ -17,6 +35,8 @@
         name: 'questType',
         data: function () {
             return {
+                centerDialogVisible: true,
+                checkList: [],
                 search: {
                     current: 1,
                     size: 10,
@@ -76,8 +96,8 @@
                     },
                     {
                         prop: 'number',
-                        type: 'text',
-                        label: '类型数量分配 ：',
+                        type: 'input',
+                        label: '题目总数量：',
                         rules: [
                             {required: true, message: '位置不能为空'}
                         ]
@@ -85,30 +105,6 @@
                     {
                         prop: 'score',
                         type: 'input',
-                        label: '记忆(5分)：',
-                        rules: [
-                            {required: true, message: '位置不能为空'}
-                        ]
-                    },
-                    {
-                        prop: 'score',
-                        type: 'input',
-                        label: '理解(5分)：',
-                        rules: [
-                            {required: true, message: '位置不能为空'}
-                        ]
-                    },
-                    {
-                        prop: 'score',
-                        type: 'input',
-                        label: '思考(5分)：',
-                        rules: [
-                            {required: true, message: '位置不能为空'}
-                        ]
-                    },
-                    {
-                        prop: 'score',
-                        type: 'text',
                         label: '试卷总分：',
                         rules: [
                             {required: true, message: '位置不能为空'}
@@ -117,10 +113,15 @@
                     {
                         prop: 'totalNumber',
                         type: 'text',
-                        label: '题目总数量：',
+                        label: '已勾选：',
                         rules: [
                             {required: true, message: '位置不能为空'}
-                        ]
+                        ],
+                        addition: () => {
+                            return [
+                                <el-button type="primary" on-click={() => this.chooseQust()} style="margin-left: 20px;">查询</el-button>
+                            ]
+                        }
                     },
                     {
                         type: 'action',
@@ -131,7 +132,29 @@
                                 handleClick: (row) => {
                                     this.global.formValidate.call(this,'functionAddForm', this.save);
                                 }
-                            },
+                            }
+                        ]
+                    }
+                ],
+                items2: [
+                    {
+                        prop: 'name',
+                        type: 'input',
+                        label: '题目类型名称',
+                        rules: [
+                            {required: true, message: '位置不能为空'}
+                        ]
+                    },
+                    {
+                        type: 'action',
+                        actionList: [
+                            {
+                                text: '查询',
+                                btnType: 'primary',
+                                handleClick: (row) => {
+                                    this.questList();
+                                }
+                            }
                         ]
                     }
                 ],
@@ -163,11 +186,16 @@
             readingBook () {
                 let params = {current: 1, size: 10, name: '',gradeId: '',readTypeId: ''}
                 answerOption.readingBooks(params).then(res => {
-                     if(res.data.code === 0) {
-                       this.items[2].options  = res.data.data
-                     }
+                    if(res.data.code === 0) {
+                        this.items[2].options  = res.data.data
+                    }
                 })
+            },
+            // 选择题目
+            checkQust () {
+                this.centerDialogVisible = true;
             }
+
         },
         mounted() {
             this.items[0].options = this.global.session.get('gradeList');
@@ -182,18 +210,6 @@
     }
 </script>
 <style lang="less">
-    .questType{
-    .bread-title{
-        padding: 10px 0 10px 20px;
-    .last >span{color: #474e5d;}
-    }
-    .content{
-        background-color: #ffffff;
-        padding: 40px 60px;
-    .button-box{
-    .delectBatch{float: right}
-    }
-    }
-    }
+    .checkList .el-checkbox{display: block;margin-left: 0;}
 </style>
 

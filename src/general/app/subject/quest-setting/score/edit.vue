@@ -1,7 +1,7 @@
 <template>
     <div class="view">
         <div class="title">
-            更新答题方式
+            更新分值管理
         </div>
         <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="100px" :model="search" ref="functionAddForm"></SearchForm>
     </div>
@@ -9,28 +9,47 @@
 <script>
 
     import SearchForm from '@components/search-form/index';
-    import answerWay from '@src/network/subject/quest-setting/answerway';
+    import scoreNum from '@src/network/subject/quest-setting/score';
+    // 题目类型
+    import quseType from '@src/network/subject/quest-setting/answer-public.js'
 
     export default{
         data () {
             return{
                 search: {
+                    gradeName: '',
+                    typeName: '',
+                    value: ''
                 },
                 items:[
                     {
                         prop: 'gradeName',
-                        type: 'input',
-                        label: '答题年级：'
+                        type: 'select',
+                        label: '年级:',
+                        placeholder: '请选择',
+                        options: [
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
                     },
                     {
-                        prop: 'gptypeName',
-                        type: 'input',
-                        label: '答题类型：'
+                        prop: 'typeName',
+                        type: 'select',
+                        label: '题目类型: ',
+                        placeholder: '请选择',
+                        options: [
+                        ],
+                        defaultProps: {
+                            id: 'id',
+                            label: 'name'
+                        }
                     },
                     {
-                        prop: 'gptypeName',
+                        prop: 'value',
                         type: 'input',
-                        label: '答题方式：'
+                        label: '分值：'
                     },
                     {
                         type: 'action',
@@ -39,7 +58,7 @@
                                 text: '提交',
                                 btnType: 'danger',
                                 handleClick: (row) => {
-                                    this.global.formValidate.call(this,'functionAddForm', this.save)
+                                    this.global.formValidate.call(this,'functionAddForm', this.save);
                                 }
                             },
                             {
@@ -57,20 +76,30 @@
         methods: {
             save() {
                 let params = {
+                    gradeId: this.search.gradeId,
                     id: this.search.id,
-                    gqtypeId: this.search.gqtypeId,
-                    gradeId: this.search.gradeId
+                    typeId: this.search.typeId,
+                    value: this.search.value
                 };
-                answerWay.edit(params).then((res) => {
+                scoreNum.edit(params).then((res) => {
                     if(res.data.code == 0){
-                    this.$message.success('修改成功');
-                    this.$router.go(-1);
+                        this.$message.success('修改成功');
+                        this.$router.go(-1);
+                    }else {
+                        this.$message.success('修改失败');
                     }
                 })
             },
-            init() {
+            questType () {
+                quseType.questType().then(res => {
+                    if(res.data.code === 0) {
+                        this.items[1].options = res.data.data
+                    }
+                })
+            },
+            init () {
                 let id = this.$route.params.id;
-                answerWay.get(id).then(res => {
+                scoreNum.get(id).then(res => {
                     if(res.data.code === 0) {
                         this.search = res.data.data;
                     }
@@ -81,7 +110,11 @@
         components: {
             SearchForm
         },
-        created(){
+        mounted () {
+            this.questType();
+            this.items[0].options = this.global.session.get('gradeList')
+        },
+        created () {
             this.init()
         }
     }
