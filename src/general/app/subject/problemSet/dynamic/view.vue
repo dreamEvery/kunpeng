@@ -91,25 +91,6 @@
                         rules: [
                             {required: true, message: '位置不能为空'}
                         ]
-                    },
-                    {
-                        type: 'action',
-                        actionList: [
-                            {
-                                text: '提交',
-                                btnType: 'primary',
-                                handleClick: (row) => {
-                                    this.global.formValidate.call(this,'functionAddForm', this.save);
-                                }
-                            },
-                            {
-                                text: '返回',
-                                btnType: 'primary',
-                                handleClick: (row) => {
-                                    this.$router.go(-1);
-                                }
-                            }
-                        ]
                     }
                 ],
                 // table的属性设置
@@ -142,17 +123,17 @@
             init () {
                 let id = this.$route.params.id;
                 console.log(id),
-                setApi.get(id).then(res => {
-                    if(res.data.code === 0) {
-                       this.search.questionScore = res.data.data.questionScore;
-                        this.search.questionsCount = res.data.data.questionsCount;
-                        this.search.id = res.data.data.id;
-                        this.search.gradeId = res.data.data.gradeId;
-                        this.search.insertTime = res.data.data.insertTime;
-                        this.search.answerDate = res.data.data.answerDate;
+                    setApi.get(id).then(res => {
+                        if(res.data.code === 0) {
+                            this.search.questionScore = res.data.data.questionScore;
+                            this.search.questionsCount = res.data.data.questionsCount;
+                            this.search.id = res.data.data.id;
+                            this.search.gradeId = res.data.data.gradeId;
+                            this.search.insertTime = res.data.data.insertTime;
+                            this.search.answerDate = res.data.data.answerDate;
 
-                    }
-                })
+                        }
+                    })
             }
         },
         mounted() {

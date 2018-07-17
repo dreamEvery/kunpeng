@@ -1,13 +1,8 @@
 // 自动组题
 const Automatic = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/automatic.vue');
 
-// 动态组题
 const Dynamic  = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/dynamic/dynamic.vue');
 const DynamicEdit  = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/dynamic/edit.vue');
-const DynamicAdd  = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/dynamic/add.vue');
-const DynamicView  = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/dynamic/view.vue');
-
-// 试卷管理
 const Paper = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/paper/paper.vue');
 const PaperSee = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/paper/See.vue');
 const PaperAdd = () => import(/* webpackChunkName: "setting" */ '@src/general/app/subject/problemSet/paper/Add.vue');
@@ -59,18 +54,6 @@ export default [
         meta: {name: '更新动态组题'},
         path: 'dynamic/edit/:id',
         component: DynamicEdit
-    },
-    {
-        name: 'dynamicAdd',
-        meta: {name: '添加动态组题'},
-        path: 'dynamic/add',
-        component: DynamicAdd
-    },
-    {
-        name: 'dynamicView',
-        meta: {name: '查看动态组题'},
-        path: 'dynamic/view/:id',
-        component: DynamicView
     },
     {
         name: 'manual',

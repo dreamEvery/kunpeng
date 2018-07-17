@@ -23,7 +23,8 @@
                     memory: '',
                     understand: '',
                     thinking: '',
-                    gradeId: ''
+                    gradeId: '',
+                    id: ''
                 },
                 items: [
                     {
@@ -127,30 +128,20 @@
             },
             save() {
                 let params = {
-                    answerDate: this.search.answerDate,
+                    answerDate: 100,
                     id: this.search.id,
                     questionScore: this.search.questionScore,
-                    questionsCount: this.search.questionsCount
+                    questionsCount: this.search.questionsCount,
+                    ranks: [
+                        {id: 1, value: this.search.memory},
+                        {id: 2, value: this.search.understand},
+                        {id: 3, value: this.search.thinking}
+                    ]
                 };
-                setApi.edit(params).then((res) => {
+                setApi.add(params).then((res) => {
                     if(res.data.code == 0){
-                        this.$message.success('修改成功');
+                        this.$message.success('添加成功');
                         this.$router.go(-1);
-                    }
-                })
-            },
-            init () {
-                let id = this.$route.params.id;
-                console.log(id),
-                setApi.get(id).then(res => {
-                    if(res.data.code === 0) {
-                       this.search.questionScore = res.data.data.questionScore;
-                        this.search.questionsCount = res.data.data.questionsCount;
-                        this.search.id = res.data.data.id;
-                        this.search.gradeId = res.data.data.gradeId;
-                        this.search.insertTime = res.data.data.insertTime;
-                        this.search.answerDate = res.data.data.answerDate;
-
                     }
                 })
             }
@@ -183,7 +174,6 @@
             }
         },
         created() {
-            this.init()
         }
     }
 </script>
