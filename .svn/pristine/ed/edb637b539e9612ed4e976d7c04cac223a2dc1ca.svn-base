@@ -1,7 +1,8 @@
 <template>
     <div class="questType">
-          <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="140px" :model="search" ref="functionAddForm"></SearchForm>
-          <div class="alertBox">
+        <div class="content">
+            <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="140px" :model="search" ref="functionAddForm"></SearchForm>
+            <div class="alertBox">
                 <el-dialog
                     title="温馨提示"
                     :visible.sync="prompt"
@@ -14,6 +15,7 @@
                     </span>
                 </el-dialog>
             </div>
+        </div>
     </div>
 </template>
 <script>
