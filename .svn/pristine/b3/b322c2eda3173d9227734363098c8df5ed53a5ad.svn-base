@@ -1,59 +1,70 @@
 <template>
     <div class="function-add">
-    	<h4>查看阅读书籍</h4>
+    	<h4>学生信息详情</h4>
         <SearchForm :items="items" :showMessage="true" :inline="false" labelWidth="120px" :model="search" ref="functionAddForm"></SearchForm>
+    	
     </div>
 </template>
 <script>
     import SearchForm from '@components/search-form/index';
-	import booksSet from '@src/network/books/booksSet.js';
+	import account from '@src/network/setting/account/account.js';
     export default {
         data() {
             return {
                 search: {
-                  	coverUrl: '',
-					gradeName:'',
-					name: "",
-					readTypeName: '',
-					remark:'',
+                  	
                 },
 
                 items: [
                     {
                         prop: 'name',
                         type: 'text',
-                        label: '阅读书籍名称',
+                        label: '姓名:  ',
                        
                     },
                     {
-                        prop: 'coverUrl', 		             	
-                        label: '书籍封面',
-                        type: 'img',
-                    },
-                    {
-                        prop: 'gradeName',
+                        prop: 'sex', 		             	
+                        label: '性别:  ',
                         type: 'text',
-                        label: '年级',
-                       
                     },
+//                   {
+//                      prop: 'classId',
+//                      type: 'text',
+//                      label: '学号:  ',
+//                     
+//                  },
                      {
-                        prop: 'readTypeName',
-                        type: 'text',
-                        label: '阅读类型',
-                       
-                    },
-                     {
-                        prop: 'remark', 		             	
-                        label: '说明',
-                        placeholder: '请输入阅读说明',
+                        prop: 'className', 		             	
+                        label: '班级:  ',
                         type: 'text',
 //						renderContent: () => {
 //							return <el-input type="textarea" v-model="remark"></el-input>
 //						}
                     },
                      {
+                        prop: 'phone',
+                        type: 'text',
+                        label: '手机号码:  ',
+                       
+                    },
+                    {
+                        prop: 'headPic',
+                        label: '头像:  ',
+                        type:'img',
+                        width:'70',
+                        height:'70',
+                       
+                    },
+                    {
                         type: 'action',
                         actionList: [
+//                          {
+//                              text: '提交',
+//                              btnType: 'primary',
+//                              handleClick: (row) => {
+//                                  this.global.formValidate.call(this,'functionAddForm', this.save);
+//                              }
+//                          },
                             {
                                 text: '返回',
                                 btnType: 'danger',
@@ -62,20 +73,26 @@
                                 }
                             }
                         ]
-                    } 
+                    }
 
                 ]
             }
         },
         methods: {
             getInit (){
-        		let id =this.$route.params.id
-        		booksSet.See(id).then(res => {
-//                  console.log('类别 下拉列表',res)  //接受到的参数
+            	let id=this.$route.params.id;
+        		account.StudentSee(id).then(res => {
+                    console.log('学生信息详情',res)  //接受到的参数
 					if(res.data.code === 0) {
 						this.search = res.data.data;
-						if(this.search.coverUrl.indexOf('?uploadId')){
-				           this.search.coverUrl=this.search.coverUrl.split('?uploadId')[0]
+						if(this.search.sex=='1'){
+							this.search.sex='男'
+						}
+						if(this.search.sex=='2'){
+							this.search.sex='女'
+						}
+						if(this.search.headPic.indexOf('?uploadId')){
+				           this.search.headPic=this.search.headPic.split('?uploadId')[0]
 				        }
                     }
                     
